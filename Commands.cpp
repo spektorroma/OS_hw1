@@ -4,6 +4,8 @@
 #include <vector>
 #include <sstream>
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <sys/sysinfo.h>
 #include <iomanip>
 #include "Commands.h"
 #include <fcntl.h> 
@@ -13,6 +15,19 @@
 
 
 using namespace std;
+
+const std::string WHITESPACE = " \n\r\t\f\v";
+
+#define SYSCALL_MACRO( a,syscall ) do { \
+/* safely invoke a system call */ \
+if( a == -1 ) { \
+  perror("smash error: "<<#syscall <<" failed"); \
+  exit(1); \
+} \
+} while( 0 ) 
+
+//                        STAFF FUNCTIONS AND MACROS
+
 
 #if 0
 #define FUNC_ENTRY()  \
@@ -25,7 +40,6 @@ using namespace std;
 #define FUNC_EXIT()
 #endif
 
-const std::string WHITESPACE = " \n\r\t\f\v";
 
 string _ltrim(const std::string& s)
 {
